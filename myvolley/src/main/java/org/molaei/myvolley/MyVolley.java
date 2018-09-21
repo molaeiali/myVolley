@@ -29,7 +29,8 @@ public abstract class MyVolley {
     private int timeout;
     private int maxRetry;
     private Result result;
-
+    private LoadingView loadingView;
+    
     private final String twoHyphens = "--";
     private final String lineEnd = "\r\n";
     private final String boundary = "apiclient-" + System.currentTimeMillis();
@@ -47,12 +48,13 @@ public abstract class MyVolley {
         void stop();
     }
 
-    public abstract LoadingView getDefaultLoading();
+    public abstract LoadingView getDefaultLoading(Context context);
     public abstract HashMap<String,String> getDefaultHeaders();
 
     public MyVolley(Context context) {
         this.context = context;
         this.hasLoading = false;
+        this.loadingView = getDefaultLoading(context);
         timeout = DefaultRetryPolicy.DEFAULT_TIMEOUT_MS;
         maxRetry = DefaultRetryPolicy.DEFAULT_MAX_RETRIES;
     }
@@ -65,16 +67,16 @@ public abstract class MyVolley {
         request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                if (hasLoading && getDefaultLoading() != null) {
-                    getDefaultLoading().stop();
+                if (hasLoading && loadingView != null) {
+                    loadingView.stop();
                 }
                 result.onSuccess(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if (hasLoading && getDefaultLoading() != null) {
-                    getDefaultLoading().stop();
+                if (hasLoading && loadingView != null) {
+                    loadingView.stop();
                 }
                 result.onFailure(error);
             }
@@ -99,16 +101,16 @@ public abstract class MyVolley {
         request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                if (hasLoading && getDefaultLoading() != null) {
-                    getDefaultLoading().stop();
+                if (hasLoading && loadingView != null) {
+                    loadingView.stop();
                 }
                 result.onSuccess(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if (hasLoading && getDefaultLoading() != null) {
-                    getDefaultLoading().stop();
+                if (hasLoading && loadingView != null) {
+                    loadingView.stop();
                 }
                 result.onFailure(error);
             }
@@ -177,16 +179,16 @@ public abstract class MyVolley {
             request = new MultipartRequest(url, mimeType, multipartBody, new Response.Listener<NetworkResponse>() {
                 @Override
                 public void onResponse(NetworkResponse response) {
-                    if (hasLoading && getDefaultLoading() != null) {
-                        getDefaultLoading().stop();
+                    if (hasLoading && loadingView != null) {
+                        loadingView.stop();
                     }
                     result.onSuccess(new String(response.data));
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    if (hasLoading && getDefaultLoading() != null) {
-                        getDefaultLoading().stop();
+                    if (hasLoading && loadingView != null) {
+                        loadingView.stop();
                     }
                     result.onFailure(error);
                 }
@@ -287,8 +289,8 @@ public abstract class MyVolley {
     public void send(Result result) {
         this.result = result;
         if (request != null) {
-            if (hasLoading && getDefaultLoading() != null) {
-                getDefaultLoading().start();
+            if (hasLoading && loadingView != null) {
+                loadingView.start();
             }
             MyVolleySingleton.getInstance(context).addRequest(request);
         }
