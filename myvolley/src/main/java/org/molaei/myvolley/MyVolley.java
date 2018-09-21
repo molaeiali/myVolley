@@ -38,7 +38,7 @@ public abstract class MyVolley {
     public interface Result {
         void onSuccess(String string);
 
-        void onFailure(int statusCode, String string, VolleyError volleyError);
+        void onFailure(VolleyError volleyError);
     }
 
     public interface LoadingView {
@@ -76,7 +76,7 @@ public abstract class MyVolley {
                 if (hasLoading && getDefaultLoading() != null) {
                     getDefaultLoading().stop();
                 }
-                result.onFailure(error.networkResponse.statusCode, new String(error.networkResponse.data), error);
+                result.onFailure(error);
             }
         }) {
             @Override
@@ -110,7 +110,7 @@ public abstract class MyVolley {
                 if (hasLoading && getDefaultLoading() != null) {
                     getDefaultLoading().stop();
                 }
-                result.onFailure(error.networkResponse.statusCode, new String(error.networkResponse.data), error);
+                result.onFailure(error);
             }
         }) {
             @Override
@@ -188,7 +188,7 @@ public abstract class MyVolley {
                     if (hasLoading && getDefaultLoading() != null) {
                         getDefaultLoading().stop();
                     }
-                    result.onFailure(error.networkResponse.statusCode, new String(error.networkResponse.data), error);
+                    result.onFailure(error);
                 }
             }) {
                 @Override
