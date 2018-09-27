@@ -286,6 +286,11 @@ public abstract class MyVolley {
         return this;
     }
 
+    public MyVolley shouldCache(boolean shouldCache){
+        request.setShouldCache(shouldCache);
+        return this;
+    }
+
     public void send(Result result) {
         this.result = result;
         if (request != null) {
