@@ -1,6 +1,7 @@
 package org.molaei.myvolley;
 
 import android.content.Context;
+import android.webkit.MimeTypeMap;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
@@ -20,8 +21,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.activation.MimetypesFileTypeMap;
 
 public abstract class MyVolley {
     private Context context;
@@ -50,7 +49,8 @@ public abstract class MyVolley {
     }
 
     public abstract LoadingView getDefaultLoading(Context context);
-    public abstract HashMap<String,String> getDefaultHeaders();
+
+    public abstract HashMap<String, String> getDefaultHeaders();
 
     public MyVolley(Context context) {
         this.context = context;
@@ -160,7 +160,9 @@ public abstract class MyVolley {
                             ex.printStackTrace();
                         }
                         byte[] bytes = bosForFile.toByteArray();
-                        String type = new MimetypesFileTypeMap().getContentType(file.getKey());
+//                        String type = new MimetypesFileTypeMap().getContentType(file.getKey());
+                        String extension = MimeTypeMap.getFileExtensionFromUrl(file.getValue().getPath());
+                        String type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
                         buildPart(dos, bytes, file.getValue().getName(), file.getKey(), type);
 
                     } catch (FileNotFoundException e) {
@@ -289,7 +291,7 @@ public abstract class MyVolley {
         return this;
     }
 
-    public MyVolley shouldCache(boolean shouldCache){
+    public MyVolley shouldCache(boolean shouldCache) {
         request.setShouldCache(shouldCache);
         return this;
     }
