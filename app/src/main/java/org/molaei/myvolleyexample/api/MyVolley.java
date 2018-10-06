@@ -11,7 +11,7 @@ public class MyVolley extends org.molaei.myvolley.MyVolley{
     }
 
     @Override
-    public LoadingView getDefaultLoading() {
+    public LoadingView getDefaultLoading(Context context) {
         return null;
     }
 

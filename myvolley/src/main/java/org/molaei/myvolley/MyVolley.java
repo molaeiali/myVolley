@@ -18,9 +18,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import eu.medsea.mimeutil.MimeUtil;
 
 public abstract class MyVolley {
     private Context context;
@@ -30,7 +32,7 @@ public abstract class MyVolley {
     private int maxRetry;
     private Result result;
     private LoadingView loadingView;
-    
+
     private final String twoHyphens = "--";
     private final String lineEnd = "\r\n";
     private final String boundary = "apiclient-" + System.currentTimeMillis();
@@ -159,7 +161,8 @@ public abstract class MyVolley {
                             ex.printStackTrace();
                         }
                         byte[] bytes = bosForFile.toByteArray();
-                        buildPart(dos, bytes, file.getValue().getName(), file.getKey());
+                        Collection<?> types = MimeUtil.getMimeTypes(file.getValue());
+                        buildPart(dos, bytes, file.getValue().getName(), file.getKey(), types.toString());
 
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -236,10 +239,11 @@ public abstract class MyVolley {
         dataOutputStream.writeBytes(lineEnd);
     }
 
-    private void buildPart(DataOutputStream dataOutputStream, byte[] fileData, String fileName, String partName) throws IOException {
+    private void buildPart(DataOutputStream dataOutputStream, byte[] fileData, String fileName, String partName, String mime) throws IOException {
         dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
         dataOutputStream.writeBytes("Content-Disposition: form-data; name=" + partName + "; filename=\""
                 + fileName + "\"" + lineEnd);
+        dataOutputStream.writeBytes("Content-Type: " + mime + lineEnd);
         dataOutputStream.writeBytes(lineEnd);
 
         ByteArrayInputStream fileInputStream = new ByteArrayInputStream(fileData);
