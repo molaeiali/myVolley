@@ -18,11 +18,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import eu.medsea.mimeutil.MimeUtil;
+import javax.activation.MimetypesFileTypeMap;
 
 public abstract class MyVolley {
     private Context context;
@@ -161,8 +160,8 @@ public abstract class MyVolley {
                             ex.printStackTrace();
                         }
                         byte[] bytes = bosForFile.toByteArray();
-                        Collection<?> types = MimeUtil.getMimeTypes(file.getValue());
-                        buildPart(dos, bytes, file.getValue().getName(), file.getKey(), types.toString());
+                        String type = new MimetypesFileTypeMap().getContentType(file.getKey());
+                        buildPart(dos, bytes, file.getValue().getName(), file.getKey(), type);
 
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
